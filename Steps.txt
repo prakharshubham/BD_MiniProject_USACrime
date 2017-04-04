@@ -1,0 +1,30 @@
+Problem Statement 1
+Step 1:
+
+ A = Load '/home/acadgild/pig/Crimes.csv' using PigStorage(',') as (id:int, case_no:chararray, date1:datetime, block:chararray, IUCR:chararray, Primary_Type:chararray,
+description:chararray, location:chararray, arrest:chararray, domestic:chararray, beat:chararray, district:chararray, ward:chararray, community:chararray,
+FBI_Code:chararray, X_CO:chararray, Y_CO:chararray, year:chararray, Last_Updated:chararray, Latitude:chararray, Longitide:chararray, Location_no:chararray);
+
+Step2:
+grp_fbi = group A by FBI_Code;
+
+Step 3:
+sum_cases = foreach grp_fbi generate group,COUNT(A);
+
+
+Problem Statement 2:
+filter_fbi = FILTER A by FBI_Code == '32';
+grp_fbi = group filter_fbi by $0;
+C = foreach grp_fbi generate COUNT(filter_fbi);
+D = group C all;
+E = foreach D generate SUM(C.$0);
+
+
+Problem Statement 3:
+
+filter_A = FILTER A by Primary_Type == 'THEFT';
+filter_A_Arr = FILTER filter_A by arrest=='true';
+B = group filter_A_Arr by district;
+C = foreach B generate group, COUNT(filter_A_Arr);
+
+
